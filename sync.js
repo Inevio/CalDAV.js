@@ -204,6 +204,61 @@ Sync.prototype.getCalendarHome = function( home, callback ){
 
 };
 
+Sync.prototype.createCalendar = function ( info, callback ) {
+
+	var body = '';
+
+	body += '<?xml version="1.0" encoding="UTF-8"?>';
+	body += '<B:mkcalendar xmlns:B="urn:ietf:params:xml:ns:caldav">';
+	body += '<A:set xmlns:A="DAV:">';
+	body += '<A:prop>';
+	body += '<D:calendar-color xmlns:D="http://apple.com/ns/ical/" symbolic-color="'+ info.color.name +'">'+ info.color.hex +'</D:calendar-color>'
+	body += '<A:displayname>'+ info.name +'</A:displayname>';
+	// MIRAR ESTE ATRIBUTO 
+	body += '<D:calendar-order xmlns:D="http://apple.com/ns/ical/">7</D:calendar-order>';
+	body += '<B:calendar-free-busy-set>	<YES/> </B:calendar-free-busy-set>';
+	body += '<B:calendar-timezone>';
+		//PROPIEDADES DE LA TIMEZONE
+		body += 'BEGIN:VCALENDAR&#13;';
+		body += 'VERSION:2.0&#13;';
+		body += 'PRODID:-//Apple Inc.//Mac OS X 10.10.1//EN&#13;';
+		body += 'CALSCALE:GREGORIAN&#13;';
+		body += 'BEGIN:VTIMEZONE&#13;';
+		body += 'TZID:Europe/Madrid&#13;';
+		body += 'BEGIN:DAYLIGHT&#13;';
+		body += 'TZOFFSETFROM:+0100&#13;';
+		body += 'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU&#13;';
+        body += 'DTSTART:19810329T020000&#13;';
+        body += 'TZNAME:CEST&#13;';
+        body += 'TZOFFSETTO:+0200&#13;';
+        body += 'END:DAYLIGHT&#13;';
+        body += 'BEGIN:STANDARD&#13;';
+        body += 'TZOFFSETFROM:+0200&#13;';
+        body += 'RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU&#13;';
+        body += 'DTSTART:19961027T030000&#13;';
+        body += 'TZNAME:CET&#13;';
+        body += 'TZOFFSETTO:+0100&#13;';
+        body += 'END:STANDARD&#13;';
+        body += 'END:VTIMEZONE&#13;';
+        body += 'END:VCALENDAR&#13;';
+    body += '</B:calendar-timezone>';
+    body += '<B:supported-calendar-component-set>';
+    body += '<B:comp name="VEVENT"/>';
+    body += '</B:supported-calendar-component-set>';
+    body += '</A:prop>';
+    body += '</A:set>'
+	body += '</B:mkcalendar>';
+
+	this.request('MKCOL', info.path + tools.uuid(), body, function (err, res) {
+		if (err) {
+			callback(err);
+			return;
+		}
+		callback(null, res);
+	});
+
+};
+
 Sync.prototype.request = function( type, path, body, callback ){
 
 	var opts = {

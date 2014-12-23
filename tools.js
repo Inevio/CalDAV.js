@@ -67,6 +67,10 @@ var Tools = function () {
 
 	};
 
+	this.uuid = function (string) {		
+		return uuid.v4();
+	};
+
 	this.normalizeCalendarAttribute = function( calendar, name ){
 
 		switch( name ){
