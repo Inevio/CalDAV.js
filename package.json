@@ -1,0 +1,22 @@
+
+{
+  "name": "CalDAV.js",
+  "version": "0.0.1",
+  "author": "",
+  "description": "",
+  "main": "lib/index.js",
+
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/.git"
+  },
+
+  "dependencies" : {
+    "async" : "*",
+    "node-uuid" : "*",
+    "underscore" : "*",
+    "xml2js" : "*"
+  },
+
+  "license": "MIT"
+}
