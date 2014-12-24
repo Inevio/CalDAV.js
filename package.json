@@ -1,6 +1,5 @@
-
 {
-  "name": "CalDAV.js",
+  "name": "caldav",
   "version": "0.0.1",
   "author": "",
   "description": "",
@@ -11,12 +10,26 @@
     "url": "https://github.com/.git"
   },
 
+  "keywords": [
+    ""
+  ],
   "dependencies" : {
-    "async" : "*",
-    "node-uuid" : "*",
-    "underscore" : "*",
-    "xml2js" : "*"
+    "sax": "0.4.0",
+    "xmlhttprequest": "1.4.2"
   },
-
-  "license": "MIT"
+  "devDependencies": {
+    "debug": "~0.7",
+    "mocha": "~1.7",
+    "chai": "~1.0",
+    "test-agent": "~0.10",
+    "http-proxy": "~0.8",
+    "commander": "~1.0",
+    "sinon": "~1.6",
+    "xml2js": "*",
+    "node-uuid": "*"
+  },
+  "license": "MIT",
+  "engine": {
+    "node": ">=0.4"
+  }
 }
