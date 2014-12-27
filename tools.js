@@ -3,8 +3,28 @@ var _    = require('underscore');
 var http = require('http');
 var xml  = require('xml2js');
 var uuid = require('node-uuid');
+var ical  = require('cozy-ical');
+
+var VCalendar = ical.VCalendar;
+var VEvent 	  = ical.VEvent;
+var VTodo     = ical.VTodo;
 
 var Tools = function () {
+
+	this.months = {
+		'Jan': '01',
+		'Feb': '02',
+		'Mar': '03',
+		'Apr': '04',
+		'May': '05',
+		'Jun': '06',
+		'Jul': '07',
+		'Aug': '08',
+		'Sep': '09',
+		'Oct': '10',
+		'Nov': '11',
+		'Dec': '12'
+	}
 
 	this.request = function( opts, callback ){
 
@@ -213,6 +233,26 @@ var Tools = function () {
 				break;
 
 		}
+
+	};
+
+	this.generateIcalTime = function (time) {
+
+		var date = new Date(time).toString().split(' ');		
+		return ( date[3] + this.months[date[1]] + date[2] + 'T' + date[4].split(':').join('') );
+	
+	};
+
+	this.parseEventData = function (event, callback) {
+
+		event = event.split('\r\n');
+		var info = {};
+
+		for (var i = 0; i < event.length - 1; i++) {
+			info[ event[i].split(':')[0] ] = event[i].split(':')[1];
+		}
+
+		callback(null, info);
 
 	};
 

@@ -1,4 +1,3 @@
-
 var async = require('async');
 var tools = require('./tools.js');
 
@@ -9,6 +8,8 @@ var Sync = function( config ){
 };
 
 Sync.prototype.createCalendar = function ( info, path, callback ) {
+
+	var cal = new VCalendar
 
 	var body = '';
 
@@ -25,7 +26,7 @@ Sync.prototype.createCalendar = function ( info, path, callback ) {
 		//PROPIEDADES DE LA TIMEZONE
 		body += 'BEGIN:VCALENDAR;\r\n';
 		body += 'VERSION:2.0;\r\n';
-		body += 'PRODID:-//Apple Inc.//Mac OS X 10.10.1//EN;\r\n';
+		body += 'PRODID:-//Inevio//NONSGML Inevio Calendar//EN;\r\n';
 		body += 'CALSCALE:GREGORIAN;\r\n';
 		body += 'BEGIN:VTIMEZONE;\r\n';
 		body += 'TZID:Europe/Madrid;\r\n';
@@ -53,8 +54,6 @@ Sync.prototype.createCalendar = function ( info, path, callback ) {
     body += '</A:set>\r\n';
 	body += '</B:mkcalendar>\r\n';
 
-	console.log( path + '/' + tools.uuid());
-
 	this.request('MKCOL', path + '/' + tools.uuid() + '/', body, function (err, res) {
 		if (err) {
 			callback(err);
@@ -77,7 +76,6 @@ Sync.prototype.createEvent = function (info, calendar, callback ) {
 	body += 'TZID:Europe/Madrid\r\n';
 	body += 'BEGIN:DAYLIGHT\r\n';
 	body += 'TZOFFSETFROM:+0100\r\n';
-	body += 'RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU\r\n';
 	body += 'DTSTART:19810329T020000\r\n';
 	body += 'TZNAME:CEST\r\n';
 	body += 'TZOFFSETTO:+0200\r\n';
@@ -91,13 +89,13 @@ Sync.prototype.createEvent = function (info, calendar, callback ) {
 	body += 'END:STANDARD\r\n';
 	body += 'END:VTIMEZONE\r\n';
 	body += 'BEGIN:VEVENT\r\n';
-	body += 'CREATED:20141223T193820Z\r\n';
-	body += 'UID:F5EC8666-662C-47F2-83E4-9F2269CC31AF\r\n';
-	body += 'DTEND;TZID=Europe/Madrid:20141223T220000\r\n';
+	body += 'CREATED:' + tools.generateIcalTime( new Date( Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate(), new Date().getUTCHours(), new Date().getUTCMinutes(), new Date().getUTCSeconds(), new Date().getUTCMilliseconds()) ) ) +'Z\r\n';
+	body += 'UID:' + tools.uuid() + '\r\n';
+	body += 'DTEND;TZID=Europe/Madrid:'+  tools.generateIcalTime(info.time.end) +'\r\n';
 	body += 'TRANSP:OPAQUE\r\n';
 	body += 'SUMMARY:' + info.name + '\r\n';
-	body += 'DTSTART;TZID=Europe/Madrid:20141223T210000\r\n';
-	body += 'DTSTAMP:20141223T193820Z\r\n';
+	body += 'DTSTART;TZID=Europe/Madrid:'+ tools.generateIcalTime(info.time.start) +'\r\n';
+	body += 'DTSTAMP:'+ tools.generateIcalTime( new Date( Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate(), new Date().getUTCHours(), new Date().getUTCMinutes(), new Date().getUTCSeconds(), new Date().getUTCMilliseconds()) ) ) +'Z\r\n';
 	body += 'SEQUENCE:0\r\n';
 	body += 'END:VEVENT\r\n';
 	body += 'END:VCALENDAR\r\n';
@@ -105,6 +103,11 @@ Sync.prototype.createEvent = function (info, calendar, callback ) {
 	this.request( 'PUT', calendar + tools.uuid() + '.ics', body, function (err, res) {
 		if (err) {
 			cosole.log(err);
+			return;
+		}
+
+		if (res.statusCode.toString().splice(0, 1) === '2') {
+			console.log('An ' + res.statusCode + ' error ocurred.');
 			return;
 		}
 
@@ -169,7 +172,7 @@ Sync.prototype.getCalendars = function( calHome, callback ){
 
 	this.request( 'PROPFIND', calHome, body, function( error, res ){
 
-		tools.parseXML( res.body, function( err, data ){
+		tools.parseXML( res.body, function ( err, data ){
 
 			if( err ){
 				return callback( err );
@@ -310,6 +313,103 @@ Sync.prototype.getCalendarHome = function( home, callback ){
 				callback
 
 			);
+
+		});
+
+	});
+
+};
+
+Sync.prototype.listCalendarEvents = function ( calendar, callback ) {
+
+	var body = '<?xml version="1.0" encoding="UTF-8"?>';
+
+	body += '<c:calendar-query xmlns:d="DAV:" xmlns:c="urn:ietf:params:xml:ns:caldav">';
+	body += '<d:prop>';
+	body += '<d:getetag/>';
+	body += '<c:calendar-data />'
+	body += '</d:prop>';
+	body += '<c:filter>';
+	body += '<c:comp-filter name="VCALENDAR">';
+	body += '<c:comp-filter name="VTODO" />';
+	body += '</c:comp-filter>';
+	body += '</c:filter>';
+	body += '</c:calendar-query>'
+
+	this.request('REPORT', calendar, body, function (err, res) {
+		if (err) {
+			callback(err);
+			return;
+		}
+
+		tools.parseXML( res.body, function ( err, data ) {
+
+			if (err) {
+				return callback(err);
+			}
+
+			tools.find( data, [ 'd:multistatus', 'd:response' ], function ( error, data ){
+
+				if( error ){
+					return callback( error );
+				}
+
+				async.map(data, function (data, callback) {
+
+					var event = {};
+
+					async.series([
+
+						// Ruta al calendario
+						function( callback ){
+							tools.find( data, [ 'd:href', 0 ], function( error, value ){
+								event.href = value;
+								callback( error );
+							});
+						},
+
+						// Sacamos el listado de atributos
+						function( callback ){
+
+							tools.find( data, [ 'd:propstat', 0, 'd:prop', 0 ], function ( error, data ){
+
+								var niceName;
+
+								for( var i in data ){
+									niceName 	      = i.split(':')[ 1 ];
+									event[ niceName ] = data[ i ][ 0 ];
+
+									tools.normalizeCalendarAttribute( event, niceName );
+								}
+
+								callback( error );
+
+							});
+
+						}
+
+					], function( error ){
+						
+						if( error ){
+							callback( error );
+						}else{
+
+							tools.parseEventData( event['calendar-data'], function (err, result) {
+								
+								event['calendar-data'] = result;
+								callback( null, event );
+
+							});
+							
+						}
+
+					});
+
+				}, function ( error, list ) {
+					callback(error, list);
+				});
+
+			});
 
 		});
 
