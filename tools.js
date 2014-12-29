@@ -1,13 +1,10 @@
 
 var _    = require('underscore');
-var http = require('http');
+var http = require('https');
 var xml  = require('xml2js');
 var uuid = require('node-uuid');
-var ical  = require('cozy-ical');
+var iCalDateParser = require('ical-date-parser');
 
-var VCalendar = ical.VCalendar;
-var VEvent 	  = ical.VEvent;
-var VTodo     = ical.VTodo;
 
 var Tools = function () {
 
@@ -249,7 +246,14 @@ var Tools = function () {
 		var info = {};
 
 		for (var i = 0; i < event.length - 1; i++) {
-			info[ event[i].split(':')[0] ] = event[i].split(':')[1];
+			if ( event[i].split(':')[0].toLowerCase().indexOf(';') < 0) {
+				info[ event[i].split(':')[0].toLowerCase() ] = ( event[i].split(':')[0].toLowerCase() === 'dtstamp') ? iCalDateParser( event[i].split(':')[1] ) : event[i].split(':')[1];
+			} else {
+				info[ event[i].split(';')[0].toLowerCase() ] = {};
+
+				info[ event[i].split(';')[0].toLowerCase() ][ event[i].split(';')[1].split('=')[0].toLowerCase() ] =  event[i].split(';')[1].split('=')[1].split(':')[0];
+				info[ event[i].split(';')[0].toLowerCase() ]['date'] = iCalDateParser( event[i].split(';')[1].split('=')[1].split(':')[1] + 'Z' )
+			}
 		}
 
 		callback(null, info);

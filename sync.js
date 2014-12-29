@@ -2,9 +2,7 @@ var async = require('async');
 var tools = require('./tools.js');
 
 var Sync = function( config ){
-
 	this.config = config;
-
 };
 
 Sync.prototype.createCalendar = function ( info, path, callback ) {
@@ -64,7 +62,16 @@ Sync.prototype.createCalendar = function ( info, path, callback ) {
 
 };
 
-Sync.prototype.createEvent = function (info, calendar, callback ) {
+Sync.prototype.createEvent = function ( info, calendar, callback ) {
+
+	info.uuid 	  = tools.uuid();
+	info.calendar = calendar;
+
+	this.generateEvent(info, callback);
+
+};
+
+Sync.prototype.generateEvent = function (info, callback ) {
 
 	var body = "";
 
@@ -90,7 +97,7 @@ Sync.prototype.createEvent = function (info, calendar, callback ) {
 	body += 'END:VTIMEZONE\r\n';
 	body += 'BEGIN:VEVENT\r\n';
 	body += 'CREATED:' + tools.generateIcalTime( new Date( Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), new Date().getUTCDate(), new Date().getUTCHours(), new Date().getUTCMinutes(), new Date().getUTCSeconds(), new Date().getUTCMilliseconds()) ) ) +'Z\r\n';
-	body += 'UID:' + tools.uuid() + '\r\n';
+	body += 'UID:' + info.uuid + '\r\n';
 	body += 'DTEND;TZID=Europe/Madrid:'+  tools.generateIcalTime(info.time.end) +'\r\n';
 	body += 'TRANSP:OPAQUE\r\n';
 	body += 'SUMMARY:' + info.name + '\r\n';
@@ -100,7 +107,7 @@ Sync.prototype.createEvent = function (info, calendar, callback ) {
 	body += 'END:VEVENT\r\n';
 	body += 'END:VCALENDAR\r\n';
 
-	this.request( 'PUT', calendar + tools.uuid() + '.ics', body, function (err, res) {
+	this.request( 'PUT', info.calendar + info.uuid + '.ics', body, function (err, res) {
 		if (err) {
 			cosole.log(err);
 			return;
@@ -119,6 +126,14 @@ Sync.prototype.createEvent = function (info, calendar, callback ) {
 Sync.prototype.deleteCalendar = function ( calendar, callback ) {
 
 	this.request('DELETE', calendar, '', function (err, res) {
+		callback(err);
+	});
+
+};
+
+Sync.prototype.deleteEvent = function ( event, callback ) {
+
+	this.request('DELETE', event, '', function (err, res) {
 		callback(err);
 	});
 
@@ -267,6 +282,8 @@ Sync.prototype.getHome = function( callback ){
 
 	this.request( 'PROPFIND', '', body, function( error, res ){
 
+		console.log(res.body);
+
 		tools.parseXML( res.body, function( err, data ){
 
 			if( err ){
@@ -377,7 +394,7 @@ Sync.prototype.listCalendarEvents = function ( calendar, callback ) {
 
 								for( var i in data ){
 									niceName 	      = i.split(':')[ 1 ];
-									event[ niceName ] = data[ i ][ 0 ];
+									event[ (niceName === 'calendar-data') ? 'calendarData' : niceName ] = data[ i ][ 0 ];
 
 									tools.normalizeCalendarAttribute( event, niceName );
 								}
@@ -394,11 +411,9 @@ Sync.prototype.listCalendarEvents = function ( calendar, callback ) {
 							callback( error );
 						}else{
 
-							tools.parseEventData( event['calendar-data'], function (err, result) {
-								
-								event['calendar-data'] = result;
+							tools.parseEventData( event.calendarData, function (err, result) {								
+								event.calendarData = result;
 								callback( null, event );
-
 							});
 							
 						}
@@ -417,14 +432,45 @@ Sync.prototype.listCalendarEvents = function ( calendar, callback ) {
 
 };
 
-Sync.prototype.renameCalendar = function ( name, calendar, callback ) {
+Sync.prototype.modifyCalendar = function ( info, event, callback ) {
 
 	var body = '<?xml version="1.0" encoding="UTF-8"?>\r\n';
-	body += '<A:propertyupdate xmlns:A="DAV:"><A:set><A:prop><A:displayname>'+ name +'</A:displayname></A:prop></A:set></A:propertyupdate>';
+	
+	body += '<A:propertyupdate xmlns:A="DAV:">';
+	body += '<A:set>';
+	body += '<A:prop>';
+	body += '<A:displayname>'+ info.name +'</A:displayname>'
+	body += '</A:prop>';
+	body += '</A:set>';
+	body += '</A:propertyupdate>';
 
 	this.request( 'PROPPATCH', calendar, body, function (err, res) {
 		console.log(err);
 	});
+
+};
+
+Sync.prototype.modifyEvent = function ( info, event, callback ) {
+
+	if ( !info.time ) info.time = {};
+
+	if ( !info.time.end ) {
+		info.time.end = event.calendarData.dtend.date
+	}
+
+	if ( !info.time.start ) {
+		info.time.start = event.calendarData.dtstart.date
+	}
+
+	if ( !info.name ){
+		info.name = event.calendarData.calendarData.summary;
+	}
+
+	info.calendar  = event.href.split('/')[3];
+	info.uuid	   = event.href.split('/')[3].split('.')[0];
+
+	this.generateEvent(info, callback);
+
 
 };
 
@@ -436,7 +482,7 @@ Sync.prototype.request = function( type, path, body, callback ){
 		path    : path || '',
 		method  : type,
 		data    : body,
-		port    : this.config.port || 8888,
+		port    : this.config.port || 5232,
 		headers : {
 
 			'brief'           : 't',
