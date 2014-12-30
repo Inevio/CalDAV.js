@@ -2,6 +2,7 @@ var sync  = require('./index.js');
 
 var con = new sync({
 	host        : '127.0.0.1',
+	protocol    : 'http',
 	port 		: 8888
 	credentials : {
 		user     : 'demo',

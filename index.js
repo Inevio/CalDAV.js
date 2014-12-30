@@ -492,7 +492,7 @@ Sync.prototype.request = function( type, path, body, callback ){
 
 	var self = this;
 
-	tools.request( opts, function( err, res ){
+	tools.request( opts, this.config.secure, function( err, res ){
 		
 		if( err ){
 			return callback( err );

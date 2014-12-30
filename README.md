@@ -13,6 +13,7 @@ var Caldav = require('caldav');
 
 var client = new Caldav({
     host        : 'example.com',
+    secure      : false, // Use of HTTPS or HTTP. Default HTTP
     port        : 8888, // Default port is 5232
     credentials : {
         user     : "demo",

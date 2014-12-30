@@ -1,8 +1,9 @@
 
-var _    = require('underscore');
-var http = require('http');
-var xml  = require('xml2js');
-var uuid = require('node-uuid');
+var _     = require('underscore');
+var http  = require('http');
+var https = require('https');
+var xml   = require('xml2js');
+var uuid  = require('node-uuid');
 var iCalDateParser = require('ical-date-parser');
 
 
@@ -23,9 +24,11 @@ var Tools = function () {
 		'Dec': '12'
 	}
 
-	this.request = function( opts, callback ){
+	this.request = function( opts, secure, callback ){
 
-		var req = http.request( opts, function( res ){
+		var protocol = secure ? https : http;
+
+		var req = protocol.request( opts, function( res ){
 
 			var buffer = '';
 
