@@ -1,6 +1,6 @@
 
 var _    = require('underscore');
-var http = require('https');
+var http = require('http');
 var xml  = require('xml2js');
 var uuid = require('node-uuid');
 var iCalDateParser = require('ical-date-parser');

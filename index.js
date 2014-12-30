@@ -7,8 +7,6 @@ var Sync = function( config ){
 
 Sync.prototype.createCalendar = function ( info, path, callback ) {
 
-	var cal = new VCalendar
-
 	var body = '';
 
 	body += '<?xml version="1.0" encoding="UTF-8"?>\r\n';
@@ -57,7 +55,7 @@ Sync.prototype.createCalendar = function ( info, path, callback ) {
 			callback(err);
 			return;
 		}
-		callback(null, res);
+		callback(null, path + '/' + tools.uuid() + '/');
 	});
 
 };
@@ -65,13 +63,13 @@ Sync.prototype.createCalendar = function ( info, path, callback ) {
 Sync.prototype.createEvent = function ( info, calendar, callback ) {
 
 	info.uuid 	  = tools.uuid();
-	info.calendar = calendar;
+	info.url      = calendar + info.uuid + '.ics';
 
 	this.generateEvent(info, callback);
 
 };
 
-Sync.prototype.generateEvent = function (info, callback ) {
+Sync.prototype.generateEvent = function ( info, callback ) {
 
 	var body = "";
 
@@ -107,18 +105,13 @@ Sync.prototype.generateEvent = function (info, callback ) {
 	body += 'END:VEVENT\r\n';
 	body += 'END:VCALENDAR\r\n';
 
-	this.request( 'PUT', info.calendar + info.uuid + '.ics', body, function (err, res) {
+	this.request( 'PUT', info.url, body, function (err, res) {
 		if (err) {
 			cosole.log(err);
 			return;
 		}
 
-		if (res.statusCode.toString().splice(0, 1) === '2') {
-			console.log('An ' + res.statusCode + ' error ocurred.');
-			return;
-		}
-
-		callback(null);
+		callback(null, info.url);
 	});
 
 };
@@ -282,8 +275,6 @@ Sync.prototype.getHome = function( callback ){
 
 	this.request( 'PROPFIND', '', body, function( error, res ){
 
-		console.log(res.body);
-
 		tools.parseXML( res.body, function( err, data ){
 
 			if( err ){
@@ -432,7 +423,7 @@ Sync.prototype.listCalendarEvents = function ( calendar, callback ) {
 
 };
 
-Sync.prototype.modifyCalendar = function ( info, event, callback ) {
+Sync.prototype.modifyCalendar = function ( info, calendar, callback ) {
 
 	var body = '<?xml version="1.0" encoding="UTF-8"?>\r\n';
 	
@@ -466,11 +457,10 @@ Sync.prototype.modifyEvent = function ( info, event, callback ) {
 		info.name = event.calendarData.calendarData.summary;
 	}
 
-	info.calendar  = event.href.split('/')[3];
 	info.uuid	   = event.href.split('/')[3].split('.')[0];
+	info.url 	   = event.href;
 
 	this.generateEvent(info, callback);
-
 
 };
 
