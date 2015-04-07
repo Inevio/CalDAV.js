@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+PRODID:-//Inevio//NONSGML Inevio Calendar//EN;
+BEGIN:VTIMEZONE
+TZID:{{timezone}}
+END:VTIMEZONE
+BEGIN:{{type}}
+UID:{{uuid}}
+DTSTAMP:{{created}}
+CREATED:{{created}}
+DTSTART;TZID={{timezone}}:{{start}}
+DTEND;TZID={{timezone}}:{{end}}
+SUMMARY:{{name}}
+END:{{type}}
+END:VCALENDAR

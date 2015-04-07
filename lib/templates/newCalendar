@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<C:mkcalendar xmlns:D="DAV:" xmlns:C="urn:ietf:params:xml:ns:caldav">
+  <D:set>
+    <D:prop>
+      <D:displayname>{{name}}</D:displayname>
+      <D:calendar-color xmlns:D="http://apple.com/ns/ical/" symbolic-color="{{color.name}}">{{ color.hex }}</D:calendar-color>
+      <C:calendar-description xml:lang="en">{{description}}</C:calendar-description>
+      <B:calendar-free-busy-set>  <YES/> </B:calendar-free-busy-set>
+      <C:supported-calendar-component-set>
+        {{#supported-components}}
+        <C:comp name="{{.}}"/>
+        {{/supported-components}}
+      </C:supported-calendar-component-set>
+      <C:calendar-timezone>
+        <![CDATA[BEGIN:VCALENDAR
+        PRODID:-//Inevio//NONSGML Inevio Calendar//EN;
+        VERSION:2.0
+        CALSCALE:GREGORIAN
+        BEGIN:VTIMEZONE
+        TZID:{{timezone}}
+        END:VTIMEZONE
+        END:VCALENDAR]]>
+      </C:calendar-timezone>
+    </D:prop>
+  </D:set>
+</C:mkcalendar>

@@ -2,16 +2,23 @@
   "name": "caldav",
   "version": "1.0.3",
   "author": "",
-  "description": "",
+  "description": "CalDAV.js is a Node.JS module with functionalities of a CalDAV client.",
   "main": "lib/index.js",
-
-  "dependencies" : {
+  "dependencies": {
     "async": "*",
     "ical-date-parser": "*",
     "node-uuid": "*",
     "underscore": "*",
-    "xml2js": "*"
+    "xml2js": "*",
+    "lodash" : "3.6.0",
+    "lodash-deep" : "1.6.0",
+    "mustache" : "2.0.0"
   },
-
-  "license": "MIT"
+  "license": "MIT",
+  "readme": "# CalDAV.js\n\nCalDAV.js is a Node.JS module with functionalities of a CalDAV client.\n\n### Version\n1.0.3\n\n### Documentation\n\nCalDAV.JS initiation:\n```js\nvar Caldav = require('caldav');\n\nvar client = new Caldav({\n    host        : 'example.com',\n    secure      : false, // Use of HTTPS or HTTP. Default HTTP\n    port        : 8888, // Default port is 5232\n    credentials : {\n        user     : \"demo\",\n        password : \"demo\"\n    }\n});\n```\n\n\nCalDAV.JS has currently this functions\n\n- createCalendar: Creates a calendar with the specific name and color and returns the new calendar's URL\n```js\nclient.createCalendar({\n    name: \"Calendar42\",\n    color: {\n        name: \"****\",\n        color: \"#424242\"\n    }\n}, homePath, function (err, calendarUrl) {\n        //...\n});\n```\n\n- createEvent: Creates an event in the given calendar and returns the new event's URL\n```js\nclient.createEvent({\n    name: \"Calendar42\",\n    time: {\n        start: new Date(),\n        end: new Date()\n    }\n}, calendarPath, function (err, eventUrl) {\n        //...\n});\n```\n\n- deleteCalendar: Deletes the specific calendar\n```js\nclient.deleteCalendar(calendarPath, function (err) {\n        //...\n});\n```\n\n- deleteEvent: Deletes the specific event\n```js\nclient.deleteEvent(eventPath, function (err) {\n        //...\n});\n```\n\n- getCalendars: Returns all the user's calendars objects in an array.\n```js\nclient.getCalendar(homePath, function (err, calendars) {\n        //...\n});\n```\n\n- getHome: Returns the users path as a string:\n```js\nclient.getHome(function (err, home) {\n        //...\n});\n```\n\n- getCalendarHome: Returns the user's calendars path\n```js\nclient.getCalendarHome(function (err, calHome) {\n        //...\n});\n```\n\n- listCalendarEvents: Returns all the event objects from a calendar\n```js\nclient.listCalendarEvents(calendarPath, function (err, events) {\n        //...\n});\n```\n\n- modifyCalendar: Modify the given properties of the specific calendar \n```js\nclient.modifyCalendar({\n    name: \"New Name\"\n}, calendarUrl, function (err) {\n        //...\n});\n```\n\n- modifyEvent: Modify the given properties of the specific event\n```js\nclient.modifyEvent({\n    name: \"New Name\",\n    time: {\n        end: new Date()\n    }\n}, eventObj, function (err) {\n        //...\n});\n```\n\nLicense\n----\n\nMIT\n",
+  "readmeFilename": "README.md",
+  "_id": "caldav@1.0.3",
+  "_shasum": "07c59ea7b849ce5ec8a9d2d38df94fdceac57104",
+  "_from": "https://github.com/javiergarmon/CalDAV.js/tarball/master",
+  "_resolved": "https://github.com/javiergarmon/CalDAV.js/tarball/master"
 }
