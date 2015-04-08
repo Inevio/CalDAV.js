@@ -3,7 +3,7 @@
   <D:set>
     <D:prop>
       <D:displayname>{{name}}</D:displayname>
-      <D:calendar-color xmlns:D="http://apple.com/ns/ical/" symbolic-color="{{color.name}}">{{ color.hex }}</D:calendar-color>
+      <D:calendar-color xmlns:D="http://apple.com/ns/ical/">{{ color }}</D:calendar-color>
       <C:calendar-description xml:lang="en">{{description}}</C:calendar-description>
       <B:calendar-free-busy-set>  <YES/> </B:calendar-free-busy-set>
       <C:supported-calendar-component-set>
