@@ -3,21 +3,23 @@
   <D:set>
     <D:prop>
       <D:displayname>{{name}}</D:displayname>
-      <D:calendar-color xmlns:D="http://apple.com/ns/ical/">{{ color }}</D:calendar-color>
-      <C:calendar-description xml:lang="en">{{description}}</C:calendar-description>
+      {{#color}}<D:calendar-color xmlns:D="http://apple.com/ns/ical/">{{ color }}</D:calendar-color>{{/color}}
+      {{#description}}<C:calendar-description xml:lang="en">{{description}}</C:calendar-description>{{/description}}
       <B:calendar-free-busy-set>  <YES/> </B:calendar-free-busy-set>
+      {{#supported-components.length}}
       <C:supported-calendar-component-set>
         {{#supported-components}}
         <C:comp name="{{.}}"/>
         {{/supported-components}}
       </C:supported-calendar-component-set>
+      {{/supported-components.length}}
       <C:calendar-timezone>
         <![CDATA[BEGIN:VCALENDAR
         PRODID:-//Inevio//NONSGML Inevio Calendar//EN;
         VERSION:2.0
         CALSCALE:GREGORIAN
         BEGIN:VTIMEZONE
-        TZID:{{timezone}}
+        TZID:{{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}
         END:VTIMEZONE
         END:VCALENDAR]]>
       </C:calendar-timezone>
