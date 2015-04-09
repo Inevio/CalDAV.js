@@ -5,7 +5,7 @@
       <D:displayname>{{name}}</D:displayname>
       {{#color}}<D:calendar-color xmlns:D="http://apple.com/ns/ical/">{{ color }}</D:calendar-color>{{/color}}
       {{#description}}<C:calendar-description xml:lang="en">{{description}}</C:calendar-description>{{/description}}
-      <B:calendar-free-busy-set>  <YES/> </B:calendar-free-busy-set>
+      <C:calendar-free-busy-set>  <YES/> </C:calendar-free-busy-set>
       {{#supported-components.length}}
       <C:supported-calendar-component-set>
         {{#supported-components}}
@@ -23,6 +23,10 @@
         END:VTIMEZONE
         END:VCALENDAR]]>
       </C:calendar-timezone>
+      <D:resourcetype>
+        <D:collection/>
+        <C:calendar/>
+      </D:resourcetype>
     </D:prop>
   </D:set>
 </C:mkcalendar>

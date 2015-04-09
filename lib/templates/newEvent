@@ -6,6 +6,10 @@ BEGIN:VTIMEZONE
 TZID:{{timezone}}
 END:VTIMEZONE
 BEGIN:{{type}}
+{{#rrule}}RRULE:{{rrule}}
+{{#class}}CLASS:{{class}}
+{{#transp}}TRANSP:{{transp}}
+{{#description}}DESCRIPTION:{{description}}
 UID:{{uuid}}
 DTSTAMP:{{created}}
 CREATED:{{created}}
