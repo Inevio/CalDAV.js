@@ -3,7 +3,7 @@ VERSION:2.0
 CALSCALE:GREGORIAN
 PRODID:-//Inevio//NONSGML Inevio Calendar//EN;
 BEGIN:VTIMEZONE
-TZID:{{timezone}}
+TZID:{{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}
 END:VTIMEZONE
 BEGIN:{{type}}
 {{#rrule}}RRULE:{{rrule}}{{/rrule}}
@@ -13,8 +13,8 @@ BEGIN:{{type}}
 UID:{{uuid}}
 DTSTAMP:{{created}}
 CREATED:{{created}}
-DTSTART;TZID={{timezone}}:{{start}}
-DTEND;TZID={{timezone}}:{{end}}
+DTSTART;TZID={{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}:{{start}}
+DTEND;TZID={{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}:{{end}}
 SUMMARY:{{name}}
 END:{{type}}
 END:VCALENDAR
