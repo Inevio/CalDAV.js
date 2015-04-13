@@ -8,9 +8,9 @@
       <C:calendar-free-busy-set>  <YES/> </C:calendar-free-busy-set>
       {{#supported-components.length}}
       <C:supported-calendar-component-set>
-        {{#supported-components}}
+        {{#list supported-components}}
         <C:comp name="{{.}}"/>
-        {{/supported-components}}
+        {{/list}}
       </C:supported-calendar-component-set>
       {{/supported-components.length}}
       <C:calendar-timezone>
