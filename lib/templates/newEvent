@@ -17,5 +17,13 @@ CREATED:{{created}}
 DTSTART;TZID={{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}:{{start}}
 DTEND;TZID={{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}:{{end}}
 SUMMARY:{{name}}
+{{#if alarm}}
+BEGIN:VALARM
+UID:{{uid}}
+TRIGGER;RELATED=START:-PT{{alarm}}
+ACTION:AUDIO
+DESCRIPTION:{{name}}
+END:VALARM
+{{#if alarm}}
 END:{{type}}
 END:VCALENDAR
