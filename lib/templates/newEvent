@@ -10,7 +10,8 @@ BEGIN:{{type}}
 {{#class}}CLASS:{{class}}{{/class}}
 {{#transp}}TRANSP:{{transp}}{{/transp}}
 {{#description}}DESCRIPTION:{{description}}{{/description}}
-UID:{{uuid}}
+{{#modified}}LAST-MODIFIED:{{modified}}{{/modified}}
+UID:{{uid}}
 DTSTAMP:{{created}}
 CREATED:{{created}}
 DTSTART;TZID={{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}:{{start}}
