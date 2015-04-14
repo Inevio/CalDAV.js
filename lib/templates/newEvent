@@ -24,6 +24,6 @@ TRIGGER;RELATED=START:-PT{{alarm}}
 ACTION:AUDIO
 DESCRIPTION:{{name}}
 END:VALARM
-{{#if alarm}}
+{{/if alarm}}
 END:{{type}}
 END:VCALENDAR
