@@ -5,7 +5,7 @@ PRODID:-//Inevio//NONSGML Inevio Calendar//EN;
 BEGIN:VTIMEZONE
 TZID:{{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}
 END:VTIMEZONE
-BEGIN:{{type}}
+BEGIN:VEVENT
 {{#rrule}}RRULE:{{rrule}}{{/rrule}}
 {{#class}}CLASS:{{class}}{{/class}}
 {{#transp}}TRANSP:{{transp}}{{/transp}}
@@ -25,5 +25,5 @@ ACTION:AUDIO
 DESCRIPTION:{{name}}
 END:VALARM
 {{/if}}
-END:{{type}}
+END:VEVENT
 END:VCALENDAR

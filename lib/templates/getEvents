@@ -5,17 +5,17 @@
 		<C:calendar-data/>
 	</D:prop>
 	<C:filter>
-       	<C:comp-filter name="VCALENDAR">
-         	<C:comp-filter name="VEVENT">
-         		{{#if date}}
-           	<C:time-range {{#start}}start="{{start}}"{{/start}} {{#end}}end="{{end}}"{{/end}}/>
-           	{{/if}}
-            {{#each text}}				
-            <C:prop-filter name="{{@key}}">
-             	<C:text-match>{{this}}</C:text-match>
-           	</C:prop-filter>
-           	{{/each}}
-         	</C:comp-filter>
-       	</C:comp-filter>
+    <C:comp-filter name="VCALENDAR">
+      <C:comp-filter name="VEVENT">
+        {{#if date}}
+        <C:time-range {{#start}}start="{{start}}"{{/start}} {{#end}}end="{{end}}"{{/end}}/>
+        {{/if}}
+        {{#each text}}				
+        <C:prop-filter name="{{@key}}">
+         	<C:text-match>{{this}}</C:text-match>
+        </C:prop-filter>
+        {{/each}}
+        </C:comp-filter>
+      </C:comp-filter>
     </C:filter>
 </C:calendar-query>

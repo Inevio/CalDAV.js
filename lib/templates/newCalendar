@@ -5,14 +5,6 @@
       <D:displayname>{{name}}</D:displayname>
       {{#color}}<D:calendar-color xmlns:D="http://apple.com/ns/ical/">{{color}}</D:calendar-color>{{/color}}
       {{#description}}<C:calendar-description xml:lang="en">{{description}}</C:calendar-description>{{/description}}
-      <C:calendar-free-busy-set>  <YES/> </C:calendar-free-busy-set>
-      {{#supported-components.length}}
-      <C:supported-calendar-component-set>
-        {{#list supported-components}}
-        <C:comp name="{{.}}"/>
-        {{/list}}
-      </C:supported-calendar-component-set>
-      {{/supported-components.length}}
       <C:calendar-timezone>
         <![CDATA[BEGIN:VCALENDAR
         PRODID:-//Inevio//NONSGML Inevio Calendar//EN;

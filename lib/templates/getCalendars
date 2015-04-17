@@ -5,7 +5,6 @@
         <A:displayname />
         <C:calendar-description />
         <D:calendar-color />
-        <C:supported-calendar-component-set />
         <A:resourcetype />
         <C:calendar-timezone />
     </A:prop>
