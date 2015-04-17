@@ -3,19 +3,19 @@ VERSION:2.0
 CALSCALE:GREGORIAN
 PRODID:-//Inevio//NONSGML Inevio Calendar//EN;
 BEGIN:VTIMEZONE
-TZID:{{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}
+TZID:{{timezone}}{{#unless timezone}}Europe/Madrid{{/unless}}
 END:VTIMEZONE
 BEGIN:VEVENT
-{{#rrule}}RRULE:{{rrule}}{{/rrule}}
-{{#class}}CLASS:{{class}}{{/class}}
-{{#transp}}TRANSP:{{transp}}{{/transp}}
-{{#description}}DESCRIPTION:{{description}}{{/description}}
-{{#modified}}LAST-MODIFIED:{{modified}}{{/modified}}
+{{#if rrule}}RRULE:{{rrule}}{{/if}}
+{{#if class}}CLASS:{{class}}{{/if}}
+{{#if transp}}TRANSP:{{transp}}{{/if}}
+{{#if description}}DESCRIPTION:{{description}}{{/if}}
+{{#if modified}}LAST-MODIFIED:{{modified}}{{/if}}
 UID:{{uid}}
 DTSTAMP:{{created}}
 CREATED:{{created}}
-DTSTART;TZID={{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}:{{start}}
-DTEND;TZID={{timezone}}{{^timezone}}Europe/Madrid{{/timezone}}:{{end}}
+DTSTART;TZID={{timezone}}{{#unless timezone}}Europe/Madrid{{/unless}}:{{start}}
+DTEND;TZID={{timezone}}{{#unless timezone}}Europe/Madrid{{/unless}}:{{end}}
 SUMMARY:{{name}}
 {{#if alarm}}
 BEGIN:VALARM
